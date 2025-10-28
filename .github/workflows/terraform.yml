@@ -30,18 +30,18 @@ jobs:
         aws-region: us-east-1  # ✅ Removed the extra colon (:) you had before
 
     - name: Terraform Init
-      run: terraform init ${{ env.TF_WORKING_DIR }}
+      run: terraform -chdir=${{ env.TF_WORKING_DIR }} init
 
     - name: Terraform Format Check
-      run: terraform fmt -check ${{ env.TF_WORKING_DIR }}
+      run: terraform -chdir=${{ env.TF_WORKING_DIR }} fmt -check
 
     - name: Terraform Validate
-      run: terraform validate ${{ env.TF_WORKING_DIR }}
+      run: terraform -chdir=${{ env.TF_WORKING_DIR }} validate
 
     - name: Terraform Plan
       id: plan
-      run: terraform plan -out=tfplan ${{ env.TF_WORKING_DIR }}
+      run: terraform -chdir=${{ env.TF_WORKING_DIR }} plan -out=tfplan
 
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      run: terraform apply -auto-approve tfplan
+      run: terraform -chdir=${{ env.TF_WORKING_DIR }} apply -auto-approve tfplan
