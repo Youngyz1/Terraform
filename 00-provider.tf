@@ -1,4 +1,12 @@
 terraform {
+  backend "s3" {
+    bucket         = "youngyz-terraform-state"
+    key            = "vpc/terraform.tfstate"
+    region         = "us-east-1"
+    dynamodb_table = "terraform-locks"
+    encrypt        = true
+  }
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -8,7 +16,5 @@ terraform {
 }
 
 provider "aws" {
-  region = var.region
-  # access_key = var.aws_access_key
-  # secret_key = var.aws_secret_key
+  region = "us-east-1"
 }

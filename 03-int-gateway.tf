@@ -4,4 +4,4 @@ resource "aws_internet_gateway" "igw" {
   tags = {
     Name = "${var.main_vpc}-igw"
   }
-}
+}    
