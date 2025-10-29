@@ -40,8 +40,15 @@ jobs:
 
     - name: Terraform Plan
       id: plan
-      run: terraform -chdir=${{ env.TF_WORKING_DIR }} plan -out=tfplan
+      run: terraform -chdir=${{ env.TF_WORKING_DIR }} plan -out=tfplan \
+        -var "aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" \
+        -var "aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
+        -var "region=us-east-1"
 
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      run: terraform -chdir=${{ env.TF_WORKING_DIR }} apply -auto-approve tfplan
+      run: terraform -chdir=${{ env.TF_WORKING_DIR }} apply -auto-approve tfplan \
+        -var "aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" \
+        -var "aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
+        -var "region=us-east-1"
+
