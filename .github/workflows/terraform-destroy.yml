@@ -1,37 +1,34 @@
-# name: Terraform Destroy
+name: Terraform Destroy
 
-# on:
-#   push:
-#     branches:
-#       - main
+on:
+  workflow_dispatch:  # ✅ Allows you to manually trigger from GitHub UI
 
-# jobs:
-#   terraform:
-#     name: Terraform Pipeline
-#     runs-on: ubuntu-latest
+jobs:
+  destroy:
+    name: Destroy Terraform Infrastructure
+    runs-on: ubuntu-latest
 
-#     env:
-#       TF_WORKING_DIR: "."  # Change this if Terraform files are in a subfolder
+    env:
+      TF_WORKING_DIR: "."  # Change if Terraform files are in a subfolder
 
-#     steps:
-#       - name: Checkout repository
-#         uses: actions/checkout@v3
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-#       - name: Set up Terraform
-#         uses: hashicorp/setup-terraform@v2
-#         with:
-#           terraform_version: 1.13.4
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.13.4
 
-#       # ✅ Configure AWS credentials from GitHub Secrets
-#       - name: Configure AWS credentials
-#         uses: aws-actions/configure-aws-credentials@v2
-#         with:
-#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#           aws-region: us-east-1
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
 
-#       - name: Terraform Init
-#         run: terraform -chdir=${{ env.TF_WORKING_DIR }} init
+      - name: Terraform Init
+        run: terraform -chdir=${{ env.TF_WORKING_DIR }} init
 
-#       - name: Terraform Destroy
-#         run: terraform -chdir=${{ env.TF_WORKING_DIR }} destroy -auto-approve
+      - name: Terraform Destroy
+        run: terraform -chdir=${{ env.TF_WORKING_DIR }} destroy -auto-approve
