@@ -1,7 +1,7 @@
 name: Terraform Destroy
 
 on:
-  workflow_dispatch:  # ✅ Allows you to manually trigger from GitHub UI
+  workflow_dispatch:  # ✅ Manual trigger from GitHub Actions UI
 
 jobs:
   destroy:
@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      TF_WORKING_DIR: "."  # Change if Terraform files are in a subfolder
+      TF_WORKING_DIR: "."  # Your Terraform root folder
 
     steps:
       - name: Checkout repository
@@ -27,8 +27,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Terraform Init
-        run: terraform -chdir=${{ env.TF_WORKING_DIR }} init
+      # ✅ Reconfigure Terraform to use the remote S3 backend
+      - name: Terraform Init (Remote Backend)
+        run: terraform -chdir=${{ env.TF_WORKING_DIR }} init -reconfigure
 
+      # ✅ Destroy resources tracked in remote S3 state
       - name: Terraform Destroy
         run: terraform -chdir=${{ env.TF_WORKING_DIR }} destroy -auto-approve
