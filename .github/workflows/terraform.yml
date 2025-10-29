@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      TF_WORKING_DIR: "."  # Adjust if Terraform files are in a subfolder
+      TF_WORKING_DIR: "."  # Change this if your Terraform files are in a subfolder
 
     steps:
     - name: Checkout code
@@ -27,7 +27,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1  # ✅ Removed the extra colon (:) you had before
+        aws-region: us-east-1
 
     - name: Terraform Init
       run: terraform -chdir=${{ env.TF_WORKING_DIR }} init
@@ -40,15 +40,16 @@ jobs:
 
     - name: Terraform Plan
       id: plan
-      run: terraform -chdir=${{ env.TF_WORKING_DIR }} plan -out=tfplan \
-        -var "aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" \
-        -var "aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
-        -var "region=us-east-1"
+      run: |
+        terraform -chdir=${{ env.TF_WORKING_DIR }} plan -out=tfplan \
+          -var "aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" \
+          -var "aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
+          -var "region=us-east-1"
 
     - name: Terraform Apply
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      run: terraform -chdir=${{ env.TF_WORKING_DIR }} apply -auto-approve tfplan \
-        -var "aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" \
-        -var "aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
-        -var "region=us-east-1"
-
+      run: |
+        terraform -chdir=${{ env.TF_WORKING_DIR }} apply -auto-approve tfplan \
+          -var "aws_access_key=${{ secrets.AWS_ACCESS_KEY_ID }}" \
+          -var "aws_secret_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
+          -var "region=us-east-1"
