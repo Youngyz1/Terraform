@@ -1,16 +1,46 @@
+# variable "aws_access_key" {
+# }
+
+# variable "aws_secret_key" {
+# }
+
+# variable "region" {
+# }
+
+# variable "main_vpc" {
+#   default = "main_vpc"
+# }
+
+# variable "vpc_cidr" {
+#   default = "10.0.0.0/16"
+# }
+
 variable "aws_access_key" {
+  description = "AWS Access Key"
+  type        = string
+  sensitive   = true
 }
 
 variable "aws_secret_key" {
+  description = "AWS Secret Key"
+  type        = string
+  sensitive   = true
 }
 
 variable "region" {
+  description = "AWS Region"
+  type        = string
+  default     = "us-east-1"
 }
 
 variable "main_vpc" {
-  default = "main_vpc"
+  description = "Name of the main VPC"
+  type        = string
+  default     = "main_vpc"
 }
 
 variable "vpc_cidr" {
-  default = "10.0.0.0/16"
+  description = "CIDR block for the VPC"
+  type        = string
+  default     = "10.0.0.0/16"
 }
